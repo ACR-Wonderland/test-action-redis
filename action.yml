@@ -1,0 +1,21 @@
+name: "Action Redis Call"
+author: "Arthur Drumond (The golden boy)"
+description: "This repository test is made for testing the action redis call."
+inputs:
+  token:
+    description: >
+      GitHub token used to check repository content and provide feedback. By default, 
+      this uses the repository token provided by GitHub Actions. You can customize this
+      by replacing this token with a user token which has write-access to your repository. 
+      Note that the token will be accessible to all repository collaborators.
+    default: ${{ github.token }} #This is the only way to obtain a valid github token for API use.
+
+outputs:
+  result:
+    description: "Base64-encoded JSON containing the results of the grading."
+
+runs:
+  using: docker
+  image: "Dockerfile"  # The Docker image containing the autograder
+  args:
+    - ${{ inputs.token }}
