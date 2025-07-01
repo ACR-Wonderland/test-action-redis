@@ -21,8 +21,8 @@ echo "Grading criteria: $GRADING_CRITERIA"
 
 # Run the Python autograder script with the provided inputs
 # This command will invoke autograder.py and pass the weights and grading criteria
-echo $6
-python /app/test.py --token $5
+echo $1
+python /app/test.py --token $1
 
 # Check if the autograder script executed successfully
 echo "✅ Autograding completed successfully!"

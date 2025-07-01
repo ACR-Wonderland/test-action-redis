@@ -7,8 +7,8 @@ from upstash_redis import Redis
 load_dotenv()
 
 redis = Redis(
-    url=os.environ["UPSTASH_REDIS_REST_URL"],
-    token=os.environ["UPSTASH_REDIS_REST_TOKEN"]
+    url=os.environ["secrets.UPSTASH_REDIS_REST_URL"],
+    token=os.environ["secrets.UPSTASH_REDIS_REST_TOKEN"]
 
 )
 
