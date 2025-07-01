@@ -9,7 +9,12 @@ inputs:
       by replacing this token with a user token which has write-access to your repository. 
       Note that the token will be accessible to all repository collaborators.
     default: ${{ github.token }} #This is the only way to obtain a valid github token for API use.
-
+  redis_url:
+    description: "The URL of the Upstash Redis REST API."
+    default: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+  redis_token:
+    description: "The token for authenticating with the Upstash Redis REST API."
+    default: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
 outputs:
   result:
     description: "Base64-encoded JSON containing the results of the grading."
@@ -19,5 +24,5 @@ runs:
   image: "Dockerfile"  # The Docker image containing the autograder
   args:
     - ${{ inputs.token }}
-    - ${{ secrets.UPSTASH_REDIS_REST_URL }}
-    - ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+    - ${{ inputs.redis_url }}
+    - ${{ inputs.redis_token }}
