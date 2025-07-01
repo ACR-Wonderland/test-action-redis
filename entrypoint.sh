@@ -22,7 +22,7 @@ echo "Grading criteria: $GRADING_CRITERIA"
 # Run the Python autograder script with the provided inputs
 # This command will invoke autograder.py and pass the weights and grading criteria
 echo $1
-python /app/test.py --token $1
+python /app/test.py --token $1 --redis-url $2 --redis-token $3
 
 # Check if the autograder script executed successfully
 echo "✅ Autograding completed successfully!"

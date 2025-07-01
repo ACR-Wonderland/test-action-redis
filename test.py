@@ -1,74 +1,58 @@
-# Place the code here
 import json
-import os
-from dotenv import load_dotenv
+import argparse
 from upstash_redis import Redis
 
-load_dotenv()
-
-redis = Redis(
-    url=os.environ["secrets.UPSTASH_REDIS_REST_URL"],
-    token=os.environ["secrets.UPSTASH_REDIS_REST_TOKEN"]
-
-)
-
-def token_exists(token: str) -> bool:
-    """Function to check if a given token exists in the database"""
+def token_exists(redis, token: str) -> bool:
     key = f"token:{token}"
     result = redis.get(key)
     return result is not None
 
-def create_token(token: str, quota: int = 10):
-    """Function to create a new token"""
+def create_token(redis, token: str, quota: int = 10):
     key = f"token:{token}"
     value = {"token": token, "quota": quota}
     redis.set(key, json.dumps(value))
     print(f"✅ Token '{token}' created with quota {quota}")
 
-def get_token_quota(token: str) -> int:
-    """Function to get the quota of a user based on his token"""
+def get_token_quota(redis, token: str) -> int:
     key = f"token:{token}"
     result = redis.get(key)
     if result is None:
         raise Exception("Token not found.")
     return json.loads(result)["quota"]
 
-def decrement_token_quota(token: str) -> bool:
-    """Function to decrement the quota of a user based on his token"""
+def decrement_token_quota(redis, token: str):
     key = f"token:{token}"
     result = redis.get(key)
     if result is None:
-        return False
+        return False, 0
 
     data = json.loads(result)
     quota = data.get("quota", 0)
 
     if quota <= 0:
-        return False
+        return False, 0
 
-    # Decrease and store updated quota
     data["quota"] = quota - 1
     redis.set(key, json.dumps(data))
-    return True
+    return True, data["quota"]
 
-
-
-
-import argparse
-
-parser = argparse.ArgumentParser(description="Process token argument.")
+parser = argparse.ArgumentParser(description="Process token and Redis credentials.")
 parser.add_argument("--token", type=str, required=True, help="GitHub token")
+parser.add_argument("--redis-url", type=str, required=True, help="Upstash Redis REST URL")
+parser.add_argument("--redis-token", type=str, required=True, help="Upstash Redis REST Token")
 args = parser.parse_args()
 
-github_token = args.token
-token = github_token
+redis = Redis(
+    url=args.redis_url,
+    token=args.redis_token
+)
 
-# Check and create if missing
-if not token_exists(token):
-    create_token(token)
+token = args.token
 
-# Decrement quota
-allowed, remaining = decrement_token_quota(token)
+if not token_exists(redis, token):
+    create_token(redis, token)
+
+allowed, remaining = decrement_token_quota(redis, token)
 if allowed:
     print(f"✅ Allowed. Remaining quota: {remaining}")
 else:
