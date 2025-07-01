@@ -1,5 +1,6 @@
 import json
 import argparse
+import os
 from upstash_redis import Redis
 
 def token_exists(redis, token: str) -> bool:
@@ -47,7 +48,7 @@ redis = Redis(
     token=args.redis_token
 )
 
-token = args.token
+token = os.getenv("GITHUB_ACTOR", args.token)
 
 if not token_exists(redis, token):
     create_token(redis, token)
