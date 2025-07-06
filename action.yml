@@ -12,11 +12,11 @@ inputs:
   redis_token:
     description: >
       Upstash Redis REST Token used to authenticate requests to the Redis database.
-    default: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+ 
   redis_url:
     description: >
       Upstash Redis REST URL used to connect to the Redis database.
-    default: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+    
 outputs:
   result:
     description: "Base64-encoded JSON containing the results of the grading."
