@@ -4,11 +4,10 @@
 echo "🚀 Starting autograder..."
 
 # Ensure that the necessary environment variables are set and print them for debugging
-echo "HTML Weight: $1"
-echo "CSS Weight: $2"
-echo "JS Weight: $3"
-echo "Timeout: $4"
-echo "token: $5"
+echo "Token: $1"
+echo "Redis URL: $2"
+echo "Redis Token: $3"
+
 
 
 
@@ -22,7 +21,7 @@ echo "Grading criteria: $GRADING_CRITERIA"
 # Run the Python autograder script with the provided inputs
 # This command will invoke autograder.py and pass the weights and grading criteria
 echo $1
-python /app/test.py --token $1 
+python /app/test.py --token $1 --redis-token $2 --redis-url $3
 
 # Check if the autograder script executed successfully
 echo "✅ Autograding completed successfully!"

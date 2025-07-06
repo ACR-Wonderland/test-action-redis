@@ -37,20 +37,15 @@ def decrement_token_quota(redis, token: str):
     redis.set(key, json.dumps(data))
     return True, data["quota"]
 
-parser = argparse.ArgumentParser(description="Process token.")
+parser = argparse.ArgumentParser(description="Process token and Redis credentials.")
 parser.add_argument("--token", type=str, required=True, help="GitHub token")
+parser.add_argument("--redis-url", type=str, required=True, help="Upstash Redis REST URL")
+parser.add_argument("--redis-token", type=str, required=True, help="Upstash Redis REST Token")
 args = parser.parse_args()
 
-# Get Redis credentials from environment variables
-redis_url = os.environ.get("UPSTASH_REDIS_REST_TOKEN")
-redis_token = os.environ.get("UPSTASH_REDIS_REST_URL")
-
-if not redis_url or not redis_token:
-    raise Exception("REDIS_URL and REDIS_TOKEN environment variables must be set.")
-
 redis = Redis(
-    url=redis_url,
-    token=redis_token
+    url=args.redis_url,
+    token=args.redis_token
 )
 
 token = os.getenv("GITHUB_ACTOR", args.token)
